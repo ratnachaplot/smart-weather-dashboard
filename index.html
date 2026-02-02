@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Weather Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <h1>🌤️ Smart Weather Dashboard</h1>
+    </div>
+
+    <div class="search-container">
+      <input type="text" id="cityInput" placeholder="Search or select a city...">
+      <button id="searchBtn">Search</button>
+      <ul id="suggestions"></ul>
+    </div>
+    <div class="recent-cities hidden">
+      <h3>Recently Viewed</h3>
+      <div id="recentList"></div>
+    </div>
+
+    <div class="dashboard hidden">
+      <div class="dashboard-header">
+        <h2 id="cityName">City</h2>
+        <h4 id="countryName"></h4>
+        <img id="flagIcon" src="" alt="Country Flag" width="40">
+        <p id="date"></p>
+        <p>Weather Station: <span class="status">Active ✅</span></p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h4>🌡️ Temperature</h4>
+          <p id="temperature">--</p>
+        </div>
+        <div class="stat-card">
+          <h4>💧 Humidity</h4>
+          <p id="humidity">--</p>
+        </div>
+        <div class="stat-card">
+          <h4>💨 Wind Speed</h4>
+          <p id="windSpeed">--</p>
+        </div>
+        <div class="stat-card">
+          <h4>⏰ Time</h4>
+          <p id="time">--</p>
+        </div>
+      </div>
+
+      <!-- Main Temperature Display -->
+<div class="main-temp">
+  <h1 id="bigTemp">--°C</h1>
+  <p id="bigCondition">--</p>
+</div>
+
+<!-- Hourly Forecast -->
+<div class="hourly">
+  <h3>Hourly Forecast</h3>
+  <div id="hourlyContainer"></div>
+</div>
+
+<!-- Extra Info -->
+<div class="extra-grid">
+  <div class="extra-card">Feels Like<br><span id="feelsLike">--</span></div>
+  <div class="extra-card">Pressure<br><span id="pressure">--</span></div>
+  <div class="extra-card">Sunrise<br><span id="sunrise">--</span></div>
+  <div class="extra-card">Sunset<br><span id="sunset">--</span></div>
+</div>
+
+
+      <div class="weather-summary">
+        <h3 id="weatherCondition">Weather Condition</h3>
+        <p id="conditionDescription">--</p>
+      </div>
+
+      <p class="update-time">Last updated: <span id="updateTime"></span></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
