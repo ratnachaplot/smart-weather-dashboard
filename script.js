@@ -5,20 +5,21 @@ const dashboard = document.querySelector(".dashboard");
 const recentSection = document.querySelector(".recent-cities");
 const recentList = document.getElementById("recentList");
 
-const API_KEY = "YOUR_API_KEY_HERE"; // 👈 paste your key
+const API_KEY = "YOUR_API_KEY_HERE"; // demo mode if not replaced
 
 const cities = [
   { name: "Mumbai", country: "India", code: "IN" },
   { name: "Delhi", country: "India", code: "IN" },
   { name: "Jaipur", country: "India", code: "IN" },
-  { name: "London", country: "United Kingdom", code: "GB" },
-  { name: "New York", country: "USA", code: "US" },
-  { name: "Tokyo", country: "Japan", code: "JP" },
-  { name: "Paris", country: "France", code: "FR" },
+  { name: "Bangalore", country: "India", code: "IN" },
+  { name: "Hyderabad", country: "India", code: "IN" },
+  { name: "Chennai", country: "India", code: "IN" },
+  { name: "Kolkata", country: "India", code: "IN" },
 ];
 
 let recentCities = [];
 
+// Search suggestions
 cityInput.addEventListener("input", e => {
   const value = e.target.value.toLowerCase();
   suggestions.innerHTML = "";
@@ -41,14 +42,16 @@ searchBtn.addEventListener("click", () => {
   if (city) fetchWeather({ name: city });
 });
 
+// Fetch weather
 async function fetchWeather(city) {
   suggestions.style.display = "none";
   dashboard.classList.remove("hidden");
   recentSection.classList.remove("hidden");
 
-  // 👉 If API key not added, show demo data
+  // Demo mode
   if (API_KEY === "YOUR_API_KEY_HERE") {
-    loadMockData(city.name);
+    const mockData = loadMockData(city.name);
+    updateUI(mockData);
     updateRecent(city.name);
     return;
   }
@@ -57,70 +60,88 @@ async function fetchWeather(city) {
     const res = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city.name}&units=metric&appid=${API_KEY}`
     );
-
     if (!res.ok) throw new Error("City not found");
-
     const data = await res.json();
+
     updateUI(data);
     updateRecent(city.name);
-
   } catch (err) {
     alert("❌ Unable to fetch weather. Showing demo data.");
-    loadMockData(city.name);
+    const mockData = loadMockData(city.name);
+    updateUI(mockData);
+    updateRecent(city.name);
   }
 }
 
+// Update UI
+function updateUI(data) {
+  document.getElementById("cityName").textContent = data.name;
+  document.getElementById("countryName").textContent =
+    data.sys.country === "IN" ? "India" : data.sys.country;
 
+  // Flag
+  const flag = document.getElementById("flagIcon");
+  flag.src = `https://flagcdn.com/w40/${data.sys.country.toLowerCase()}.png`;
+  flag.alt = data.sys.country;
 
-function updateUI(cityData, data) {
-  document.getElementById("cityName").textContent = cityData.name;
-  document.getElementById("countryName").textContent = cityData.sys.country;
-
+  // Main temperature
   document.getElementById("bigTemp").textContent =
-    Math.round(data.current.temp) + "°C";
+    Math.round(data.main.temp) + "°C";
+
+  // Weather icon
+  const icon = data.weather[0].icon || "01d";
+  document.getElementById("weatherIcon")?.setAttribute(
+    "src",
+    `https://openweathermap.org/img/wn/${icon}@2x.png`
+  );
+
+  // Conditions
   document.getElementById("bigCondition").textContent =
-    data.current.weather[0].description;
+    data.weather[0].description;
 
   document.getElementById("temperature").textContent =
-    data.current.temp + "°C";
+    data.main.temp + "°C";
   document.getElementById("humidity").textContent =
-    data.current.humidity + "%";
+    data.main.humidity + "%";
   document.getElementById("windSpeed").textContent =
-    data.current.wind_speed + " km/h";
-
+    data.wind.speed + " km/h";
   document.getElementById("feelsLike").textContent =
-    data.current.feels_like + "°C";
+    data.main.feels_like + "°C";
   document.getElementById("pressure").textContent =
-    data.current.pressure + " hPa";
-
+    data.main.pressure + " hPa";
   document.getElementById("sunrise").textContent =
-    new Date(data.current.sunrise * 1000).toLocaleTimeString();
+    new Date(data.sys.sunrise * 1000).toLocaleTimeString();
   document.getElementById("sunset").textContent =
-    new Date(data.current.sunset * 1000).toLocaleTimeString();
+    new Date(data.sys.sunset * 1000).toLocaleTimeString();
 
-  // Hourly
-  const hourlyDiv = document.getElementById("hourlyContainer");
-  hourlyDiv.innerHTML = "";
-  data.hourly.slice(0, 6).forEach(h => {
-    const div = document.createElement("div");
-    div.className = "hour-card";
-    div.innerHTML = `
-      <p>${new Date(h.dt * 1000).getHours()}:00</p>
-      <p>${Math.round(h.temp)}°</p>
-    `;
-    hourlyDiv.appendChild(div);
-  });
+  // Date & time
+  document.getElementById("date").textContent =
+    new Date().toDateString();
+  document.getElementById("time").textContent =
+    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  document.getElementById("updateTime").textContent =
+    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-  setWeatherBackground(data.current.weather[0].main);
+  // Weather description
+  // document.getElementById("weatherCondition").textContent =
+  //   data.weather[0].main;
+  document.getElementById("conditionDescription").textContent =
+    data.weather[0].description;
+
+  // Hourly forecast
+  loadHourlyForecast();
+
+  setWeatherBackground(data.weather[0].main);
 }
 
-
+// Update recent cities
 function updateRecent(cityName) {
   if (!recentCities.includes(cityName)) {
     recentCities.unshift(cityName);
     if (recentCities.length > 3) recentCities.pop();
   }
 
+    console.log("Recent Cities:", recentCities); // Debugging line
   recentList.innerHTML = "";
   recentCities.forEach(city => {
     const div = document.createElement("div");
@@ -129,8 +150,11 @@ function updateRecent(cityName) {
     div.onclick = () => fetchWeather({ name: city });
     recentList.appendChild(div);
   });
+
+
 }
 
+// Background based on weather
 function setWeatherBackground(condition) {
   if (condition.includes("Rain"))
     document.body.style.background =
@@ -149,24 +173,36 @@ function setWeatherBackground(condition) {
       "linear-gradient(135deg, #1c1c2a, #222940)";
 }
 
+// Demo data
 function loadMockData(cityName) {
-  const mockData = {
+  return {
     name: cityName,
-    sys: { country: "IN" },
-    main: {
-      temp: 27,
-      humidity: 58
-    },
-    wind: {
-      speed: 12
-    },
-    weather: [
-      {
-        main: "Clear",
-        description: "clear sky"
-      }
-    ]
+    sys: { country: "IN", sunrise: 1700000000, sunset: 1700040000 },
+    main: { temp: 27, feels_like: 29, humidity: 58, pressure: 1012 },
+    wind: { speed: 12 },
+    weather: [{ main: "Clear", description: "clear sky", icon: "01d" }],
   };
-
-  updateUI(mockData);
 }
+
+// Demo hourly forecast
+function loadHourlyForecast() {
+  const hourlyDiv = document.getElementById("hourlyContainer");
+  hourlyDiv.innerHTML = "";
+  const hours = [
+    { time: "01:00", temp: 26 },
+    { time: "03:00", temp: 25 },
+    { time: "05:00", temp: 24 },
+    { time: "07:00", temp: 27 },
+    { time: "09:00", temp: 29 },
+    { time: "11:00", temp: 31 },
+  ];
+  hours.forEach(h => {
+    const div = document.createElement("div");
+    div.className = "hour-card";
+    div.innerHTML = `<p>${h.time}</p><p>${h.temp}°C</p>`;
+    hourlyDiv.appendChild(div);
+  });
+}
+
+// Initial load
+loadHourlyForecast();

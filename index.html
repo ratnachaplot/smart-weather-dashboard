@@ -9,8 +9,9 @@
 <body>
   <div class="app">
     <div class="topbar">
-      <h1>🌤️ Smart Weather Dashboard</h1>
+      <h1>Smart Weather Dashboard</h1>
     </div>
+
 
     <div class="search-container">
       <input type="text" id="cityInput" placeholder="Search or select a city...">
@@ -19,7 +20,7 @@
     </div>
     <div class="recent-cities hidden">
       <h3>Recently Viewed</h3>
-      <div id="recentList"></div>
+      <div id="recentList" class="recent-list"></div>
     </div>
 
     <div class="dashboard hidden">
@@ -46,19 +47,22 @@
         </div>
         <div class="stat-card">
           <h4>⏰ Time</h4>
-          <p id="time">--</p>
+            <p id="time">--</p>
         </div>
       </div>
 
       <!-- Main Temperature Display -->
 <div class="main-temp">
+    <img id="weatherIcon" alt="Weather Icon" width="60">
   <h1 id="bigTemp">--°C</h1>
+
+
   <p id="bigCondition">--</p>
 </div>
 
 <!-- Hourly Forecast -->
 <div class="hourly">
-  <h3>Hourly Forecast</h3>
+  <h3>Hourly Forecast (Demo)</h3>
   <div id="hourlyContainer"></div>
 </div>
 
@@ -72,8 +76,9 @@
 
 
       <div class="weather-summary">
-        <h3 id="weatherCondition">Weather Condition</h3>
-        <p id="conditionDescription">--</p>
+        <h3>Weather Insight</h3>
+<p id="conditionDescription">Comfortable weather conditions</p>
+
       </div>
 
       <p class="update-time">Last updated: <span id="updateTime"></span></p>
