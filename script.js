@@ -5,7 +5,7 @@ const dashboard = document.querySelector(".dashboard");
 const recentSection = document.querySelector(".recent-cities");
 const recentList = document.getElementById("recentList");
 
-const API_KEY = "YOUR_API_KEY_HERE"; // demo mode if not replaced
+const API_KEY = "my api"; // demo mode if not replaced
 
 const cities = [
   { name: "Mumbai", country: "India", code: "IN" },
@@ -15,6 +15,10 @@ const cities = [
   { name: "Hyderabad", country: "India", code: "IN" },
   { name: "Chennai", country: "India", code: "IN" },
   { name: "Kolkata", country: "India", code: "IN" },
+  { name: "Pune", country: "India", code: "IN" },
+  { name: "Ahmedabad", country: "India", code: "IN" },
+  { name: "Surat", country: "India", code: "IN" },
+  { name: "New York", country: "USA", code: "US" },
 ];
 
 let recentCities = [];
