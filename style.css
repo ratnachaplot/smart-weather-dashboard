@@ -479,3 +479,14 @@ body::before {
   background-clip: text;
   font-weight: 700;
 }
+
+@media (max-width: 500px) {
+  #searchBtn {
+    padding: 12px 14px;
+    font-size: 0.8rem;
+  }
+}
+
+
+
+
